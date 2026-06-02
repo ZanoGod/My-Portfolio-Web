@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>A Heartfelt Message</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Poppins:wght@300;400;600&display=swap");
+
+      :root {
+        --primary: #ff4d6d;
+        --secondary: #ff758f;
+        --accent: #c9184a;
+        --bg-gradient: linear-gradient(135deg, #fff0f3 0%, #ffccd5 100%);
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background: var(--bg-gradient);
+        min-height: 100vh;
+        overflow-x: hidden;
+        margin: 0;
+        cursor:
+          url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="%23ff4d6d"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>'),
+          auto;
+      }
+
+      .serif {
+        font-family: "Playfair Display", serif;
+      }
+      .cursive {
+        font-family: "Dancing Script", cursive;
+      }
+
+      /* Smooth reveal transitions */
+      .fade-in {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.8s ease-out;
+      }
+      .fade-in.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* Floating Hearts */
+      .heart-bg {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .floating-heart {
+        position: absolute;
+        animation: floatUp 8s linear infinite;
+        opacity: 0;
+      }
+
+      @keyframes floatUp {
+        0% {
+          transform: translateY(110vh) rotate(0deg) scale(0.5);
+          opacity: 0;
+        }
+        20% {
+          opacity: 0.6;
+        }
+        80% {
+          opacity: 0.6;
+        }
+        100% {
+          transform: translateY(-10vh) rotate(360deg) scale(1.2);
+          opacity: 0;
+        }
+      }
+
+      /* Glassmorphism */
+      .glass {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 0 20px 50px rgba(255, 77, 109, 0.1);
+      }
+
+      /* Typewriter Cursor */
+      .typewriter::after {
+        content: "|";
+        animation: blink 0.7s infinite;
+      }
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+
+      /* Card container animation */
+      .envelope-wrapper {
+        perspective: 1000px;
+        transition: transform 0.8s;
+      }
+
+      .opened .envelope-top {
+        transform: rotateX(180deg);
+        z-index: 0;
+      }
+
+      /* Evasive Button */
+      #noBtn {
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+
+      /* Confetti */
+      .confetti {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        background: var(--primary);
+        z-index: 100;
+      }
+
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #fff0f3;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #ff758f;
+        border-radius: 10px;
+      }
+    </style>
+  </head>
+  <body
+    class="flex flex-col items-center justify-start overflow-y-auto pt-12 pb-24 px-4"
+  >
+    <div id="heartContainer" class="heart-bg"></div>
+
+    <!-- Background Music -->
+    <audio id="bgMusic" loop>
+      <!-- Replace the src with your own romantic music link -->
+      <source src="/blue - yung kai.mp3" type="audio/mpeg" />
+    </audio>
+
+    <!-- Background Music UI -->
+    <div class="fixed top-6 right-6 z-50">
+      <button
+        id="musicToggle"
+        class="glass p-3 rounded-full hover:scale-110 transition-transform flex items-center justify-center"
+      >
+        <svg
+          id="musicIcon"
+          class="w-6 h-6 text-rose-500"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <!-- Music On Icon (Default) -->
+          <path
+            id="iconPath"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"
+          />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Entrance Overlay: The Envelope -->
+    <div
+      id="entrance"
+      class="fixed inset-0 z-[100] bg-rose-50 flex items-center justify-center transition-opacity duration-1000"
+    >
+      <div class="text-center cursor-pointer group" onclick="startExperience()">
+        <div
+          class="mb-8 transform group-hover:scale-110 transition-transform duration-500"
+        >
+          <svg
+            class="w-32 h-32 text-rose-400 mx-auto"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"
+            />
+          </svg>
+        </div>
+        <h2 class="serif text-3xl text-rose-600 animate-bounce">
+          Click to open my heart
+        </h2>
+        <p class="text-rose-400 mt-2">A special message for someone special</p>
+      </div>
+    </div>
+
+    <!-- Main Content Flow -->
+    <div id="app" class="hidden max-w-2xl w-full space-y-12 z-10">
+      <!-- Section 1: Introduction -->
+      <section class="glass p-8 rounded-3xl text-center fade-in">
+        <h1 class="text-4xl md:text-5xl cursive text-rose-600 mb-6">
+          Dear You...
+        </h1>
+        <div
+          id="typewriter"
+          class="text-xl text-gray-700 leading-relaxed min-h-[100px] italic serif"
+        ></div>
+      </section>
+
+      <!-- Section 2: Why You? -->
+      <section class="space-y-6 fade-in">
+        <h3 class="text-2xl serif text-rose-700 text-center font-bold italic">
+          A Few Reasons Why...
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="glass p-6 rounded-2xl hover:bg-rose-50 transition-colors">
+            <span class="text-3xl mb-2 block">✨</span>
+            <h4 class="font-bold text-rose-600">Your Presence</h4>
+            <p class="text-sm text-gray-600">
+              You light up every room you walk into without even trying.
+            </p>
+          </div>
+          <div class="glass p-6 rounded-2xl hover:bg-rose-50 transition-colors">
+            <span class="text-3xl mb-2 block">🌸</span>
+            <h4 class="font-bold text-rose-600">Your Smile</h4>
+            <p class="text-sm text-gray-600">
+              It's the most beautiful thing I've ever seen, hands down.
+            </p>
+          </div>
+          <div class="glass p-6 rounded-2xl hover:bg-rose-50 transition-colors">
+            <span class="text-3xl mb-2 block">🧠</span>
+            <h4 class="font-bold text-rose-600">Your Mind</h4>
+            <p class="text-sm text-gray-600">
+              The way you think and talk makes me fall for you even more.
+            </p>
+          </div>
+          <div class="glass p-6 rounded-2xl hover:bg-rose-50 transition-colors">
+            <span class="text-3xl mb-2 block">💫</span>
+            <h4 class="font-bold text-rose-600">Your Kindness</h4>
+            <p class="text-sm text-gray-600">
+              The world needs more of the warmth you give so freely.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3: The Big Question -->
+      <section
+        class="glass p-10 rounded-3xl text-center shadow-2xl border-2 border-rose-200 fade-in"
+      >
+        <h2 class="text-3xl serif text-gray-800 mb-8 font-bold">
+          I have a question I've been nervous to ask...
+        </h2>
+        <p class="text-4xl cursive text-rose-600 mb-12">
+          Will you be my Valentine / Forever person?
+        </p>
+
+        <div
+          class="flex flex-col md:flex-row items-center justify-center gap-6 h-32"
+        >
+          <button
+            id="yesBtn"
+            class="bg-rose-500 hover:bg-rose-600 text-white px-12 py-4 rounded-full text-xl font-bold shadow-lg transform active:scale-95 transition-all"
+          >
+            YES! ❤️
+          </button>
+          <button
+            id="noBtn"
+            class="bg-white text-gray-400 border border-gray-200 px-10 py-4 rounded-full text-lg font-semibold hover:bg-gray-50"
+          >
+            No
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <!-- Celebration Screen -->
+    <div
+      id="celebration"
+      class="fixed inset-0 z-[200] bg-white flex flex-col items-center justify-center hidden opacity-0 transition-opacity duration-1000"
+    >
+      <div class="text-center p-8 glass rounded-3xl max-w-lg mx-4">
+        <div id="confettiContainer"></div>
+        <h2 class="text-6xl cursive text-rose-600 mb-4 animate-pulse">
+          It's a YES!
+        </h2>
+        <p class="text-2xl serif italic text-gray-700 mb-8">
+          You just made me the luckiest person in the world.
+        </p>
+        <div class="text-7xl mb-8">💖🥰👫🌹</div>
+        <button
+          onclick="location.reload()"
+          class="bg-rose-100 text-rose-600 px-6 py-2 rounded-full text-sm hover:bg-rose-200 transition-colors"
+        >
+          Restart
+        </button>
+      </div>
+    </div>
+
+    <script>
+      // 0. Music Logic
+      const bgMusic = document.getElementById("bgMusic");
+      const musicToggle = document.getElementById("musicToggle");
+      const musicIcon = document.getElementById("musicIcon");
+      const iconPath = document.getElementById("iconPath");
+      let isPlaying = false;
+
+      const musicOnPath =
+        "M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3";
+      const musicOffPath =
+        "M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z";
+
+      function toggleMusic() {
+        if (isPlaying) {
+          bgMusic.pause();
+          iconPath.setAttribute("d", musicOffPath);
+        } else {
+          bgMusic.play().catch((e) => console.log("Audio play failed:", e));
+          iconPath.setAttribute("d", musicOnPath);
+        }
+        isPlaying = !isPlaying;
+      }
+
+      musicToggle.addEventListener("click", toggleMusic);
+
+      // 1. Start Experience
+      function startExperience() {
+        document.getElementById("entrance").style.opacity = "0";
+
+        // Start music on first interaction (required by browsers)
+        bgMusic
+          .play()
+          .then(() => {
+            isPlaying = true;
+            iconPath.setAttribute("d", musicOnPath);
+          })
+          .catch((e) => console.log("Audio requires manual start"));
+
+        setTimeout(() => {
+          document.getElementById("entrance").classList.add("hidden");
+          document.getElementById("app").classList.remove("hidden");
+          triggerScrollAnimations();
+          startTypewriter();
+        }, 1000);
+      }
+
+      // 2. Typewriter Effect
+      const message =
+        "I've spent a lot of time thinking about how to say this... but every time I'm around you, the words just disappear. You're special to me in a way I can't quite explain. I hope this little site makes you smile as much as you make me smile.";
+      const typewriterEl = document.getElementById("typewriter");
+
+      function startTypewriter() {
+        let i = 0;
+        function type() {
+          if (i < message.length) {
+            typewriterEl.innerHTML += message.charAt(i);
+            i++;
+            setTimeout(type, 40);
+          } else {
+            typewriterEl.classList.remove("typewriter");
+          }
+        }
+        typewriterEl.classList.add("typewriter");
+        type();
+      }
+
+      // 3. Scroll Animations
+      function triggerScrollAnimations() {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("visible");
+              }
+            });
+          },
+          { threshold: 0.1 },
+        );
+
+        document
+          .querySelectorAll(".fade-in")
+          .forEach((el) => observer.observe(el));
+      }
+
+      // 4. Floating Hearts System
+      const heartContainer = document.getElementById("heartContainer");
+      const heartColors = [
+        "#ff4d6d",
+        "#ff758f",
+        "#ff8fa3",
+        "#ffb3c1",
+        "#fae1dd",
+      ];
+
+      function createHeart() {
+        const heart = document.createElement("div");
+        heart.classList.add("floating-heart");
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.animationDuration = Math.random() * 4 + 4 + "s";
+        heart.style.color =
+          heartColors[Math.floor(Math.random() * heartColors.length)];
+
+        const size = Math.random() * 20 + 10;
+        heart.innerHTML = `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
+
+        heartContainer.appendChild(heart);
+        setTimeout(() => heart.remove(), 8000);
+      }
+      setInterval(createHeart, 400);
+
+      // 5. Evasive "No" Button
+      const noBtn = document.getElementById("noBtn");
+      const noMessages = [
+        "Are you sure?",
+        "Think again!",
+        "Pwease? 🥺",
+        "But we'd be so cute!",
+        "Just click Yes already!",
+        "You're being difficult!",
+        "I'll buy you snacks!",
+        "Last chance!",
+      ];
+      let msgIndex = 0;
+
+      const moveNoButton = (e) => {
+        const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+        const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+
+        noBtn.style.position = "fixed";
+        noBtn.style.left = x + "px";
+        noBtn.style.top = y + "px";
+        noBtn.innerText = noMessages[msgIndex];
+        msgIndex = (msgIndex + 1) % noMessages.length;
+      };
+
+      noBtn.addEventListener("mouseover", moveNoButton);
+      noBtn.addEventListener("touchstart", (e) => {
+        e.preventDefault();
+        moveNoButton();
+      });
+
+      // 6. Success & Celebration
+      const yesBtn = document.getElementById("yesBtn");
+      const celebration = document.getElementById("celebration");
+
+      yesBtn.addEventListener("click", () => {
+        celebration.classList.remove("hidden");
+        setTimeout(() => (celebration.style.opacity = "1"), 50);
+        createConfetti();
+      });
+
+      function createConfetti() {
+        for (let i = 0; i < 100; i++) {
+          const confetti = document.createElement("div");
+          confetti.classList.add("confetti");
+          confetti.style.left = Math.random() * 100 + "vw";
+          confetti.style.top = "-20px";
+          confetti.style.backgroundColor =
+            heartColors[Math.floor(Math.random() * heartColors.length)];
+          confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+
+          document.body.appendChild(confetti);
+
+          const animation = confetti.animate(
+            [
+              { transform: `translate3d(0,0,0) rotate(0deg)`, opacity: 1 },
+              {
+                transform: `translate3d(${Math.random() * 100 - 50}px, ${window.innerHeight}px, 0) rotate(${Math.random() * 1000}deg)`,
+                opacity: 0,
+              },
+            ],
+            {
+              duration: Math.random() * 3000 + 2000,
+              easing: "cubic-bezier(0, .9, .57, 1)",
+              delay: Math.random() * 2000,
+            },
+          );
+
+          animation.onfinish = () => confetti.remove();
+        }
+      }
+
+      // 7. Mouse Trail
+      document.addEventListener("mousemove", (e) => {
+        if (Math.random() > 0.15) return;
+        const star = document.createElement("div");
+        star.innerHTML = "✨";
+        star.style.position = "fixed";
+        star.style.left = e.clientX + "px";
+        star.style.top = e.clientY + "px";
+        star.style.pointerEvents = "none";
+        star.style.zIndex = "1000";
+        star.style.color = "#ff758f";
+        document.body.appendChild(star);
+
+        const anim = star.animate(
+          [
+            { transform: "translate(0,0) scale(1)", opacity: 1 },
+            {
+              transform: `translate(${Math.random() * 40 - 20}px, 50px) scale(0)`,
+              opacity: 0,
+            },
+          ],
+          { duration: 1000 },
+        );
+
+        anim.onfinish = () => star.remove();
+      });
+    </script>
+  </body>
+</html>
