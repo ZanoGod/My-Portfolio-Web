@@ -15,6 +15,36 @@ const reduceMotion = window.matchMedia(
   "(prefers-reduced-motion: reduce)",
 ).matches;
 
+const themeToggle = document.querySelector(".theme-toggle");
+const themeStorageKey = "zin-portfolio-theme";
+const savedTheme = (() => {
+  try { return localStorage.getItem(themeStorageKey); } catch { return null; }
+})();
+const initialTheme = savedTheme === "dark" || savedTheme === "light"
+  ? savedTheme
+  : (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+
+const applyTheme = (theme, persist = false) => {
+  document.documentElement.dataset.theme = theme;
+  if (!themeToggle) return;
+  const darkMode = theme === "dark";
+  themeToggle.setAttribute("aria-label", darkMode ? "Switch to light mode" : "Switch to dark mode");
+  themeToggle.setAttribute("title", darkMode ? "Switch to light mode" : "Switch to dark mode");
+  themeToggle.setAttribute("aria-pressed", String(darkMode));
+  if (persist) {
+    try { localStorage.setItem(themeStorageKey, theme); } catch { /* Storage may be unavailable. */ }
+  }
+};
+
+applyTheme(initialTheme);
+if (themeToggle) {
+  themeToggle.addEventListener("click", () => {
+    const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+    applyTheme(nextTheme, true);
+  });
+}
+
+
 if (yearTarget) {
   yearTarget.textContent = new Date().getFullYear();
 }
