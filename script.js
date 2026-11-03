@@ -19,7 +19,7 @@
     }
     if (persist) { try { localStorage.setItem(storageKey, theme); } catch (_) {} }
   }
-  setTheme(savedTheme === 'dark' || savedTheme === 'light' ? savedTheme : (preferredDark.matches ? 'dark' : 'light'));
+  setTheme(savedTheme === 'dark' || savedTheme === 'light' ? savedTheme : 'light');
   themeButton?.addEventListener('click', () => setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark', true));
   function closeMenu() { navLinks?.classList.remove('open'); menuButton?.setAttribute('aria-expanded', 'false'); menuButton?.setAttribute('aria-label', 'Open navigation'); }
   menuButton?.addEventListener('click', () => {
