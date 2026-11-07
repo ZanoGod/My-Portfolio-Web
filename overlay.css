@@ -1,0 +1,187 @@
+/* Clear Frosted Overlay */
+.popup-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(246, 240, 231, 0.35);
+    backdrop-filter: blur(12px) saturate(145%);
+    -webkit-backdrop-filter: blur(12px) saturate(145%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+        visibility 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.popup-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Clear Liquid Glass Card */
+.popup-box {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background:
+        radial-gradient(circle at top left, rgba(255, 255, 255, 0.75), transparent 62%),
+        linear-gradient(145deg, rgba(255, 251, 245, 0.78) 0%, rgba(255, 251, 245, 0.42) 100%);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border-radius: var(--radius-xl, 34px);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    box-shadow:
+        0 28px 80px rgba(35, 31, 28, 0.16),
+        0 4px 16px rgba(35, 31, 28, 0.06),
+        inset 0 1.5px 2px rgba(255, 255, 255, 0.95),
+        inset 0 -1px 2px rgba(255, 255, 255, 0.45);
+    padding: 2.5rem 2.25rem;
+    max-width: 440px;
+    width: 100%;
+    color: var(--text, #17191d);
+    transform: translateY(20px) scale(0.96);
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    overflow: hidden;
+}
+
+.popup-overlay.show .popup-box {
+    transform: translateY(0) scale(1);
+}
+
+/* Frosted Pill Badge */
+.popup-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: rgba(255, 251, 245, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 0 2px 8px rgba(35, 31, 28, 0.05);
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--secondary, #23404d);
+    margin-bottom: 1.15rem;
+}
+
+.status-dot {
+    width: 7px;
+    height: 7px;
+    background-color: var(--primary, #c45f35);
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(196, 95, 53, 0.65);
+}
+
+/* Fix Heading Alignment (Overrides global h2 max-width: 13ch) */
+.popup-box h2 {
+    max-width: none;
+    width: 100%;
+    margin: 0 auto 0.75rem;
+    font-family: "Cormorant Garamond", serif;
+    font-size: clamp(2rem, 4vw, 2.45rem);
+    font-weight: 700;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    color: var(--text, #17191d);
+    text-align: center;
+}
+
+/* Fix Body Paragraph Alignment */
+.popup-box p {
+    max-width: 34ch;
+    width: 100%;
+    margin: 0 auto 1.75rem;
+    font-size: 0.96rem;
+    line-height: 1.65;
+    color: var(--muted, #5e5e68);
+    text-align: center;
+}
+
+/* Pill CTA Button (Matches Navbar CTA) */
+.popup-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0 2rem;
+    border-radius: 999px;
+    background: var(--surface-ink, #1f2431);
+    color: #fef7ef;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow:
+        0 12px 24px -6px rgba(31, 36, 49, 0.28),
+        inset 0 1px 1px rgba(255, 255, 255, 0.25);
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+        background-color 0.22s ease,
+        box-shadow 0.22s ease;
+}
+
+.popup-btn:hover {
+    transform: translateY(-2px);
+    background: #11151e;
+    box-shadow:
+        0 16px 28px -6px rgba(31, 36, 49, 0.36),
+        inset 0 1px 1px rgba(255, 255, 255, 0.35);
+}
+
+.popup-btn:active {
+    transform: translateY(0) scale(0.98);
+}
+
+/* Dark Mode Integration (Matches html[data-theme="dark"] in styles.css) */
+html[data-theme="dark"] .popup-overlay {
+    background: rgba(16, 35, 43, 0.55);
+}
+
+html[data-theme="dark"] .popup-box {
+    background:
+        radial-gradient(circle at top left, rgba(246, 240, 231, 0.12), transparent 60%),
+        linear-gradient(145deg, rgba(31, 55, 64, 0.82) 0%, rgba(23, 44, 52, 0.62) 100%);
+    border-color: rgba(246, 240, 231, 0.22);
+    box-shadow:
+        0 28px 80px rgba(0, 0, 0, 0.45),
+        inset 0 1px 1.5px rgba(246, 240, 231, 0.25);
+    color: #fff8ef;
+}
+
+html[data-theme="dark"] .popup-badge {
+    background: rgba(246, 240, 231, 0.1);
+    border-color: rgba(246, 240, 231, 0.18);
+    color: #f6f0e7;
+}
+
+html[data-theme="dark"] .status-dot {
+    background-color: #ffb18b;
+    box-shadow: 0 0 8px rgba(255, 177, 139, 0.65);
+}
+
+html[data-theme="dark"] .popup-box h2 {
+    color: #fff8ef;
+}
+
+html[data-theme="dark"] .popup-box p {
+    color: #d5dfdf;
+}
+
+html[data-theme="dark"] .popup-btn {
+    background: var(--primary, #d77a51);
+    color: #172c34;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+html[data-theme="dark"] .popup-btn:hover {
+    background: var(--primary-deep, #b65d38);
+    color: #fff8ef;
+}
